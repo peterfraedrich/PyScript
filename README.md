@@ -9,7 +9,7 @@ Because whitespace dependency is dumb and Guido should have never made Python th
 # comments can use either hashes
 // C-style comments
 ''' python-style multi-line comments '''
-/* or C-style multi-line comments
+/* or C-style multi-line comments */
 
 // classes are defined like JS objects
 class doSomething () {
