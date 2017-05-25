@@ -1,0 +1,78 @@
+#!/usr/bin/env
+
+import argparse
+import re
+
+parser = argparse.ArgumentParser(description='Translates Python code from Javscript-like syntax to PEP-8 syntax.')
+parser.add_argument('--source', '-s', required=True, help='Source file to parse')
+parser.add_argument('--destination', '--dest', '-d', required=False, help='Destination file for formatted python. Defaults to <source>.py')
+parser.add_argument('--dry', '-n', required=False, help='Parses the input but does not write an output file', action='store_true')
+args = parser.parse_args()
+
+class pyScript:
+    '''
+    base class for pyScript parser
+    '''
+    def __init__(self, source_file, dest_file):
+        self.SOURCE_FILE = source_file
+        self.DEST_FILE = dest_file
+        return
+
+    def parse(self, dry_run):
+        '''
+        the thing that does the parsing
+        '''
+        self.DRY_RUN = dry_run
+        with open(self.SOURCE_FILE, 'r') as SOURCE:
+            source = SOURCE.readlines()
+        pyLines = []
+        level = 0
+        for line in source:
+            l = line.strip('\n').strip()
+            if len(l) == 0:
+                continue
+            if '#!/' in l:
+                pyLines.append(l)
+                continue
+            if re.match(r"""^(#|//|\/\*|\*\/).*$""", l):
+                l = re.sub(r"""\/\*""", """'''""", l)
+                l = re.sub(r"""\*\/""", """'''""", l)
+                l = re.sub(r"""/""", """#""", l)
+                pyLines.append(l)
+                continue
+            if re.match(r"""import\s{0,1}\(.*\)""", l):
+                ### IMPORT statement
+                statement = l.strip('import').strip().strip('(').strip(')')
+                s = statement.split('from')
+                if len(s) == 1:
+                    pyLines.append('import {}'.format(s[0]))
+                    continue
+                else:
+                    if ('[' or ']') in s[0]:
+                        y = s[0].replace('[','').replace(']','').split(',')
+                        print y
+                        x = 'from {} import {}'.format(s[1].strip(), ','.join(y))
+                    else:
+                        x = 'from {} import {}'.format(s[1].strip(), s[0])
+                    pyLines.append(x)
+                    continue
+            if re.match(r"""^class.*(\n|\{)""", l):
+                pyLines.append(l.strip('{').strip() + ':')
+
+
+
+        return pyLines
+                
+                
+
+
+
+
+
+def main():
+    ps = pyScript(args.source, args.destination)
+    file = ps.parse(args.dry)
+    print '\n'.join(file)
+
+if __name__ == '__main__':
+    main()
