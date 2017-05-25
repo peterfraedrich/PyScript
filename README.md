@@ -5,7 +5,7 @@ PyScript is an alternative syntax and interpreter for Python, allowing for the w
 Because whitespace dependency is dumb and Guido should have never made Python that way. This aims to put a bandaid over that gross oversight.
 
 ### Syntax
-```
+```c
 # comments can use either hashes
 // C-style comments
 ''' python-style multi-line comments '''
