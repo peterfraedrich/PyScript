@@ -11,6 +11,11 @@ Because whitespace dependency is dumb and Guido should have never made Python th
 ''' python-style multi-line comments '''
 /* or C-style multi-line comments */
 
+// imports are handled different, but sanely
+import (package)                    // import single package
+import (sub from package)           // import single submodule from package
+import ([sub1, sub2] from package)  // import multiple submodules from a package
+
 // classes are defined like JS objects
 class doSomething () {
     // code here
